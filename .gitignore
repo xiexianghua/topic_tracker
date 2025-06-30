@@ -1,0 +1,4 @@
+build/
+__pycache__/
+data/topic_tracker.db
+.env

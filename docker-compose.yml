@@ -1,0 +1,29 @@
+# 使用推荐的 docker-compose 文件版本
+version: '3.8'
+
+# 定义服务
+services:
+  # 服务的名称，可以自定义，这里我们用 topic-tracker
+  topic-tracker:
+    # 指定容器的镜像
+    image: topic-tracker
+    
+    # 容器的名称，对应 --name topic-tracker
+    container_name: topic-tracker
+    
+    # 端口映射，对应 -p 5000:5000
+    ports:
+      - "5050:5000"
+      
+    # 卷挂载，对应 -v $(pwd)/data:/app/data
+    # ./data 表示当前目录下的 data 文件夹
+    volumes:
+      - ./data:/app/data
+      
+    # 环境变量，对应 -e
+    environment:
+      GOOGLE_API_KEY: AIzaSyCPs6vZBxhIn_jqsg4VFbSSDg5ZTBkhWCA
+      TZ: Asia/Shanghai
+      
+    # 推荐添加：设置重启策略，确保容器在退出或服务器重启后能自动启动
+    restart: unless-stopped
