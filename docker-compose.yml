@@ -1,29 +1,26 @@
-# 使用推荐的 docker-compose 文件版本
 version: '3.8'
 
-# 定义服务
 services:
-  # 服务的名称，可以自定义，这里我们用 topic-tracker
-  topic-tracker:
-    # 指定容器的镜像
-    image: topic-tracker
-    
-    # 容器的名称，对应 --name topic-tracker
-    container_name: topic-tracker
-    
-    # 端口映射，对应 -p 5000:5000
+  ai-bark-app:
+    build: .
+    container_name: ai-bark-system
     ports:
       - "5050:5000"
+    environment:
+      # 数据库配置
+      - DATABASE_URL=sqlite:////app/data/scripts.db
       
-    # 卷挂载，对应 -v $(pwd)/data:/app/data
-    # ./data 表示当前目录下的 data 文件夹
+      # Gemini API配置（请替换为您的API Key）
+      - GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+      
+      # Bark配置（请替换为您的Device Key）
+      - BARK_DEVICE_KEY=YOUR_BARK_DEVICE_KEY
+      
+      # 可选：自定义Bark服务器
+      # - BARK_API_SERVER=https://your-bark-server.com
+    
     volumes:
       - ./data:/app/data
-      
-    # 环境变量，对应 -e
-    environment:
-      GOOGLE_API_KEY: AIzaSyCPs6vZBxhIn_jqsg4VFbSSDg5ZTBkhWCA
-      TZ: Asia/Shanghai
-      
-    # 推荐添加：设置重启策略，确保容器在退出或服务器重启后能自动启动
+      # - ./scripts:/app/scripts
+    
     restart: unless-stopped

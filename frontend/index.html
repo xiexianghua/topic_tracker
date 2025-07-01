@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI搜索与Bark推送管理系统</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI搜索与Bark推送管理系统</h1>
+            <button class="btn btn-primary" onclick="showCreateScriptModal()">+ 创建新脚本</button>
+        </header>
+
+        <main>
+            <div class="scripts-grid" id="scriptsGrid">
+                <!-- 脚本卡片将在这里动态生成 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 创建/编辑脚本模态框 -->
+    <div class="modal" id="scriptModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">创建新脚本</h2>
+                <span class="close" onclick="closeScriptModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="scriptForm" onsubmit="return false;">
+                    <input type="hidden" id="scriptId">
+                    
+                    <div class="form-group">
+                        <label for="scriptName">脚本名称 <span style="color: red;">*</span></label>
+                        <input type="text" id="scriptName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scriptDescription">描述</label>
+                        <textarea id="scriptDescription" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cronExpression">Cron表达式（留空表示手动运行）</label>
+                        <div class="cron-input-group">
+                            <input type="text" id="cronExpression" placeholder="分 时 日 月 周（例如：0 9 * * * 表示每天9点）">
+                            <select id="cronPreset" onchange="insertCronPreset()">
+                                <option value="">选择预设</option>
+                                <option value="0 * * * *">每小时整点</option>
+                                <option value="0 0 * * *">每天0点</option>
+                                <option value="0 6 * * *">每天早上6点</option>
+                                <option value="0 9 * * *">每天上午9点</option>
+                                <option value="0 12 * * *">每天中午12点</option>
+                                <option value="0 18 * * *">每天下午6点</option>
+                                <option value="0 22 * * *">每天晚上10点</option>
+                                <option value="*/5 * * * *">每5分钟</option>
+                                <option value="*/10 * * * *">每10分钟</option>
+                                <option value="*/30 * * * *">每30分钟</option>
+                                <option value="0 8-18 * * *">每天8-18点整点</option>
+                                <option value="0 9 * * 1-5">工作日9点</option>
+                                <option value="0 10 * * 0,6">周末10点</option>
+                                <option value="0 0 1 * *">每月1号0点</option>
+                                <option value="0 0 * * 1">每周一0点</option>
+                            </select>
+                        </div>
+                        <div id="cronDescription" class="cron-description">请输入cron表达式</div>
+                        <div class="cron-help">
+                            <small>格式：分(0-59) 时(0-23) 日(1-31) 月(1-12) 周(0-7，0和7都表示周日)</small><br>
+                            <small>特殊字符：* 任意值 , 多个值 - 范围 / 步长</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="scriptActive">
+                            启用自动运行
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scriptCode">脚本代码 <span style="color: red;">*</span></label>
+                        <div class="code-editor">
+                            <textarea id="scriptCode" rows="20" required placeholder="# 在这里输入Python脚本代码"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="showTemplatesModal()">
+                            使用模板
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="saveScript(event)">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板选择模态框 -->
+    <div class="modal" id="templatesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>选择脚本模板</h2>
+                <span class="close" onclick="closeTemplatesModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="templates-grid" id="templatesGrid">
+                    <!-- 模板将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 运行历史模态框 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>运行历史</h2>
+                <span class="close" onclick="closeHistoryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="history-list" id="historyList">
+                    <!-- 运行历史将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
